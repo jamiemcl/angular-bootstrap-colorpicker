@@ -1,5 +1,5 @@
 angular.module('colorpicker.module', [])
-    .factory('Helper', function () {
+    .factory('HelperFactory', function () {
       'use strict';
       return {
         closestSlider: function (elem) {
@@ -81,7 +81,7 @@ angular.module('colorpicker.module', [])
         ]
       };
     })
-    .factory('Color', ['Helper', function (Helper) {
+    .factory('Color', ['HelperFactory', function (HelperFactory) {
       'use strict';
       return {
         value: {
@@ -125,9 +125,9 @@ angular.module('colorpicker.module', [])
         //parse a string to HSB
         setColor: function (val) {
           val = val.toLowerCase();
-          for (var key in Helper.stringParsers) {
-            if (Helper.stringParsers.hasOwnProperty(key)) {
-              var parser = Helper.stringParsers[key];
+          for (var key in HelperFactory.stringParsers) {
+            if (HelperFactory.stringParsers.hasOwnProperty(key)) {
+              var parser = HelperFactory.stringParsers[key];
               var match = parser.re.exec(val),
                   values = match && parser.parse(match);
               if (values) {
@@ -187,7 +187,7 @@ angular.module('colorpicker.module', [])
         }
       };
     }])
-    .factory('Slider', ['Helper', function (Helper) {
+    .factory('Slider', ['HelperFactory', function (HelperFactory) {
       'use strict';
       var
           slider = {
@@ -214,8 +214,8 @@ angular.module('colorpicker.module', [])
         },
         setSlider: function (event, fixedPosition) {
           var
-            target = Helper.closestSlider(event.target),
-            targetOffset = Helper.getOffset(target, fixedPosition),
+            target = HelperFactory.closestSlider(event.target),
+            targetOffset = HelperFactory.getOffset(target, fixedPosition),
             rect = target.getBoundingClientRect(),
             offsetX = event.clientX - rect.left,
             offsetY = event.clientY - rect.top;
@@ -262,7 +262,7 @@ angular.module('colorpicker.module', [])
         }
       };
     }])
-    .directive('colorpicker', ['$document', '$compile', 'Color', 'Slider', 'Helper', function ($document, $compile, Color, Slider, Helper) {
+    .directive('colorpicker', ['$document', '$compile', 'Color', 'Slider', 'HelperFactory', function ($document, $compile, Color, Slider, HelperFactory) {
       'use strict';
       return {
         require: '?ngModel',
@@ -455,7 +455,7 @@ angular.module('colorpicker.module', [])
           var getColorpickerTemplatePosition = function() {
             var
                 positionValue,
-                positionOffset = Helper.getOffset(elem[0]);
+                positionOffset = HelperFactory.getOffset(elem[0]);
 
             if(angular.isDefined(attrs.colorpickerParent)) {
               positionOffset.left = 0;
